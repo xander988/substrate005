@@ -52,9 +52,12 @@ impl system::Config for Test {
 	type SS58Prefix = SS58Prefix;
 	type OnSetCode = ();
 }
-
+parameter_types! {
+	pub const TooLength: u32 = 250;
+}
 impl pallet_template::Config for Test {
 	type Event = Event;
+	type TooLength=TooLength;
 }
 
 // Build genesis storage according to the mock runtime.

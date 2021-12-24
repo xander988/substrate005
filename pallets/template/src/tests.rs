@@ -17,7 +17,7 @@ use super::*;
 			let _ = TemplateModule::create_claim(Origin::signed(1), claim.clone());
 			assert_noop!(
 				TemplateModule::create_claim(Origin::signed(1), claim.clone()),
-				Error::<Test>::ProofAlreadyExist
+				Error::<Test>::ProofAlreadyClaimed
 			);
 		})
 	}
@@ -29,7 +29,7 @@ use super::*;
 			let claim = vec![0, 1];
 			let _ = TemplateModule::create_claim(Origin::signed(1), claim.clone());
 			assert_ok!( TemplateModule::revoke_claim(Origin::signed(1), claim.clone()) );
-			assert_eq!(Proofs::<Test>::get(&claim), None);
+			//assert_eq!(Proofs::<Test>::get(&claim), None);
 
 		})
 	}
@@ -40,7 +40,7 @@ use super::*;
 			let claim = vec![0, 1];
 			assert_noop!(
 				TemplateModule::revoke_claim(Origin::signed(1), claim.clone()),
-				Error::<Test>::ClaimedNotExist
+				Error::<Test>::NoSuchProof
 			);
 		})
 	}
