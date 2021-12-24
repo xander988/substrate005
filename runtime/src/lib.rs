@@ -267,14 +267,20 @@ impl pallet_transaction_payment::Config for Runtime {
 	type FeeMultiplierUpdate = ();
 }
 
+
+
 impl pallet_sudo::Config for Runtime {
 	type Event = Event;
 	type Call = Call;
+}
+parameter_types! {
+	pub const TooLength: u32 = 50;
 }
 
 /// Configure the pallet-template in pallets/template.
 impl pallet_template::Config for Runtime {
 	type Event = Event;
+	type TooLength=TooLength;
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.

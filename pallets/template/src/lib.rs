@@ -3,6 +3,11 @@
 // Re-export pallet items so that they can be accessed from the crate namespace.
 pub use pallet::*;
 
+#[cfg(test)]
+mod mock;
+#[cfg(test)]
+mod tests;
+
 #[frame_support::pallet]
 pub mod pallet {
   use frame_support::pallet_prelude::*;
@@ -14,6 +19,10 @@ pub mod pallet {
 pub trait Config: frame_system::Config {
 /// Because this pallet emits events, it depends on the runtime's definition of an event.
 type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
+
+//add 
+
+type TooLength :Get<u32>;
 }
 // Pallets use events to inform users when important changes are made.
 // Event documentation should end with an array that provides descriptive names for parameters.
@@ -36,6 +45,13 @@ pub enum Error<T> {
   NoSuchProof,
   /// The proof is claimed by another account, so caller can't revoke it.
   NotProofOwner,
+
+  ProofAlreadyExist,
+  ClaimedNotExist,
+  ProofOwnerNotExist,
+
+  TooLengthProof,
+
   }
 #[pallet::pallet]
 #[pallet::generate_store(pub(super) trait Store)]
@@ -55,9 +71,9 @@ impl<T: Config> Pallet<T> {
     origin: OriginFor<T>,
     proof: Vec<u8>,
     ) -> DispatchResult {
-      // Check that the extrinsic was signed and get the signer.
-      // This function will return an error if the extrinsic is not signed.
-      // https://docs.substrate.io/v3/runtime/origins
+
+
+      ensure!(proof.len() <= T::TooLength::get() as usize ,Error::<T>::TooLengthProof);
       let sender = ensure_signed(origin)?;
 
       // Verify that the specified proof has not already been claimed.
